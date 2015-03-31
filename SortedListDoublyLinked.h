@@ -18,9 +18,6 @@ class SortedListDoublyLinked
       DoubleNode<T>* locateNodeRemove(String* sk);
       DoubleNode<T>* locateNodeAdd(T* item);
 
-      DoubleNode<T>* addDN(T* item);
-      T* remove(DoubleNode<T>* curr);
-
       DoubleNode<T>* findHead();
       DoubleNode<T>* findTail();
 
@@ -41,17 +38,19 @@ class SortedListDoublyLinked
 
       ListDoublyLinkedIterator<T>* iterator();
 
+      DoubleNode<T>* addDN(T* item);
+      T* remove(DoubleNode<T>* curr);
 };
 
 template < class T >
-SortedListDoublyLinked<T>::SortedListDoublyLinked(int (*comp_items) (T* item_1, T* item_2), int (*comp_keys) (String* key, T* item)) 
+SortedListDoublyLinked<T>::SortedListDoublyLinked(int (*comp_items) (T* item_1, T* item_2), int (*comp_keys) (String* key, T* item))
 {
    sze = 0;
    loc = NULL;
 
    compare_items = comp_items;
    compare_keys = comp_keys;
-} 
+}
 
 template < class T >
 SortedListDoublyLinked<T>::~SortedListDoublyLinked()
@@ -61,7 +60,7 @@ SortedListDoublyLinked<T>::~SortedListDoublyLinked()
 }
 
 template < class T >
-void SortedListDoublyLinked<T>::remove(String* sk) 
+void SortedListDoublyLinked<T>::remove(String* sk)
 {
    //identify the node to be removed
    DoubleNode<T>* curr = locateNodeRemove(sk);
@@ -71,28 +70,20 @@ void SortedListDoublyLinked<T>::remove(String* sk)
 template < class T >
 T* SortedListDoublyLinked<T>::remove(DoubleNode<T>* curr)
 {
-
-   //DO THIS (prev == NULL / after == NULL are special cases)
-   //remember to set loc
-
    T* item;
-
    DoubleNode<T>* prev;
    DoubleNode<T>* after;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+   if(sze == 1)
+   {
+       item = curr -> getItem();
+       loc = NULL;
+   }
+   else
+   {
+       prev = prev -> getPrev();
+       after = after -> getNext();
+   }
 
    sze--;
    delete curr;
@@ -100,13 +91,13 @@ T* SortedListDoublyLinked<T>::remove(DoubleNode<T>* curr)
 }
 
 template < class T >
-bool SortedListDoublyLinked<T>::isEmpty() 
+bool SortedListDoublyLinked<T>::isEmpty()
 {
    return sze == 0;
-} 
+}
 
 template < class T >
-int SortedListDoublyLinked<T>::size() 
+int SortedListDoublyLinked<T>::size()
 {
    return sze;
 }
@@ -132,16 +123,16 @@ DoubleNode<T>* SortedListDoublyLinked<T>::findLocationAdd(T* item)
    //use next links to find the interior location
    if (comp >= 0)   // >= FIFO for duplicates
    {
-      while (curr->getNext() != NULL && comp >= 0) 
+      while (curr->getNext() != NULL && comp >= 0)
       {
          curr = curr->getNext();
          comp = (*compare_items) (item, curr->getItem());
       }
    }
    //use prev links to find the interior location
-   else if (comp < 0) 
+   else if (comp < 0)
    {
-      while (curr->getPrev() != NULL && comp < 0)  
+      while (curr->getPrev() != NULL && comp < 0)
       {
          curr = curr->getPrev();
          comp = (*compare_items) (item, curr->getItem());
@@ -158,18 +149,18 @@ DoubleNode<T>* SortedListDoublyLinked<T>::findLocationRemove(String* sk)
    int comp = (*compare_keys) (sk, curr->getItem());
 
    //use next links to find the interior location
-   if (comp > 0)  
+   if (comp > 0)
    {
-      while (curr->getNext() != NULL && comp > 0) 
+      while (curr->getNext() != NULL && comp > 0)
       {
          curr = curr->getNext();
          comp = (*compare_keys) (sk, curr->getItem());
       }
    }
    //use prev links to find the interior location
-   else if (comp < 0) 
+   else if (comp < 0)
    {
-      while (curr->getPrev() != NULL && comp < 0)  
+      while (curr->getPrev() != NULL && comp < 0)
       {
          curr = curr->getPrev();
          comp = (*compare_keys) (sk, curr->getItem());
@@ -188,20 +179,20 @@ DoubleNode<T>* SortedListDoublyLinked<T>::locateNodeRemove(String* sk)
       return NULL;
    }
 
-   DoubleNode<T>* curr = findLocationRemove(sk);  
+   DoubleNode<T>* curr = findLocationRemove(sk);
    int comp = (*compare_keys) (sk, curr->getItem());
 
    if (comp != 0)  //removing and didn't find a match
-   { 
-      return NULL; 
+   {
+      return NULL;
    }
- 
+
    //return a direct reference to the node to be removed
-   return curr; 
+   return curr;
 }
 
 template < class T >
-DoubleNode<T>* SortedListDoublyLinked<T>::locateNodeAdd(T* item) 
+DoubleNode<T>* SortedListDoublyLinked<T>::locateNodeAdd(T* item)
 {
    //size = 0 special case
    if (sze == 0)
@@ -214,12 +205,12 @@ DoubleNode<T>* SortedListDoublyLinked<T>::locateNodeAdd(T* item)
 
    //need to move to the node before the insertion location (if the insert is not before the head)
    //that is, if next refs were used, back up one
-   if (curr->getPrev() != NULL && comp < 0)  
+   if (curr->getPrev() != NULL && comp < 0)
    {
-      curr = curr->getPrev();  
+      curr = curr->getPrev();
    }
 
-   return curr; 
+   return curr;
 }
 
 template < class T >
@@ -236,21 +227,21 @@ DoubleNode<T>* SortedListDoublyLinked<T>::addDN(T* item)
    DoubleNode<T>* node = new DoubleNode<T>(item);
 
    //inserting into an empty list (loc is NULL)
-   if (prev == NULL) 
+   if (prev == NULL)
    {
       node->setNext(loc);
-   } 
+   }
 
    //inserting at the top of a non-empty list
    //this is a special check as insertions at the head and right after the head are not distinguished by locateNodeAdd
-   else if (prev->getPrev() == NULL && (*compare_items) (item, prev->getItem()) < 0)  
+   else if (prev->getPrev() == NULL && (*compare_items) (item, prev->getItem()) < 0)
    {
       prev->setPrev(node);
       node->setNext(prev);
    }
 
    //general case (the node right before the insertion location returned by locateNode for add)
-   else 
+   else
    {
       DoubleNode<T>* curr = prev->getNext();  //could be NULL (can't set a prev link)
       node->setNext(curr);
@@ -261,16 +252,16 @@ DoubleNode<T>* SortedListDoublyLinked<T>::addDN(T* item)
       {
          curr->setPrev(node);
       }
-   } 
+   }
 
    //reposition loc for locality of reference
    loc = node;
    sze++;
    return node;
-}  
+}
 
 template < class T >
-void SortedListDoublyLinked<T>::removeAll() 
+void SortedListDoublyLinked<T>::removeAll()
 {
    DoubleNode<T>* temp;
 
@@ -291,7 +282,7 @@ void SortedListDoublyLinked<T>::removeAll()
       loc = NULL;
       sze = 0;
    }
-} 
+}
 
 template < class T >
 DoubleNode<T>* SortedListDoublyLinked<T>::findHead()

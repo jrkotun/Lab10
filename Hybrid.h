@@ -38,6 +38,23 @@ Hybrid<T>::~Hybrid()
    delete sldl;
 }
 
+template < class T >
+bool Hybrid<T>::isEmpty()
+{
+
+}
+
+template < class T >
+void Hybrid<T>::enqueue(T* item)
+{
+
+}
+
+template < class T >
+T* Hybrid<T>::dequeue()
+{
+
+}
 //DO THIS
 //complete the implementation for the Hybrid ADT in two different ways
 //as outlined in the Lab 10 description
