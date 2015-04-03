@@ -1,3 +1,5 @@
+//github: https://github.com/abkniaz/lab10
+
 #include "Hybrid.h"
 #include "CD.h"
 using CSC2110::CD;
@@ -44,6 +46,7 @@ int main()
    Hybrid<CD>* h = new Hybrid<CD>(&CD::compare_items, &CD::compare_keys);
    addCDs(cds, h);
 
+  
    ListDoublyLinkedIterator<CD>* iter = h->iterator();
    while(iter->hasNext())
    {
@@ -51,7 +54,7 @@ int main()
       cd->displayCD();
    }
    delete iter;
-
+  
    while(!(h->isEmpty()))
    {
       CD* cd = h->dequeue();

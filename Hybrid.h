@@ -10,7 +10,9 @@ class Hybrid
 {
 
    private:
-      QueueLinked<T>* q;
+		// used for the easy way 
+		// QueueLinked<T>* q;
+      QueueLinked<DoubleNode<T> >* q;
       SortedListDoublyLinked<T>* sldl;
 
    public:
@@ -27,7 +29,9 @@ class Hybrid
 template < class T >
 Hybrid<T>::Hybrid(int (*comp_items) (T* item_1, T* item_2), int (*comp_keys) (String* key, T* item))
 {
-   q = new QueueLinked<T>();
+	// used for the easy way
+	   //q = new QueueLinked<T>();
+   q = new QueueLinked<DoubleNode<T> >();
    sldl = new SortedListDoublyLinked<T>(comp_items, comp_keys);
 }
 
@@ -41,19 +45,36 @@ Hybrid<T>::~Hybrid()
 template < class T >
 bool Hybrid<T>::isEmpty()
 {
-
+	return sldl->isEmpty();
 }
 
 template < class T >
 void Hybrid<T>::enqueue(T* item)
 {
-
+	//q->enqueue(item);
+	DoubleNode<T>* node = sldl->addDN(item);
+	q->enqueue(node);
 }
 
 template < class T >
 T* Hybrid<T>::dequeue()
 {
+	DoubleNode<T>* curr = q->dequeue();
+	T* item = sldl->remove(curr);
+	return item;
+	
+	// Doing it the easy way...
+	
+	/*T* item = q->dequeue();
+	sldl->remove(item->getKey());
+	return item;*/
+	
+}
 
+template < class T >
+ListDoublyLinkedIterator<T>* Hybrid<T>::iterator()
+{
+	return sldl->iterator();
 }
 //DO THIS
 //complete the implementation for the Hybrid ADT in two different ways
